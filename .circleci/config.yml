@@ -1,0 +1,82 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/renalware-heroic
+    docker:
+      # this is important to use proper image with browsers support
+      - image: circleci/ruby:2.5.3-stretch-node-browsers-legacy
+        environment:
+          PGHOST: 127.0.0.1
+          PGUSER: renalware
+          RAILS_ENV: test
+      - image: circleci/postgres:10.3-alpine
+        environment:
+          POSTGRES_USER: renalware
+      - image: redis:3.2.7
+
+    parallelism: 1
+
+    steps:
+      - checkout
+
+      - run: mkdir -p ./tmp/test-artifacts
+      - run: mkdir -p ./coverage
+
+      - restore_cache:
+          keys:
+            - renalware-heroic-{{ checksum "Gemfile.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - renalware-heroic-
+
+      - run: bundle install --path vendor/bundle --jobs=3 --retry=3
+
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: renalware-heroic-{{ checksum "Gemfile.lock" }}
+
+      - run: sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main" > /etc/apt/sources.list.d/PostgreSQL.list'
+      - run: sudo sh -c 'wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -'
+      - run: sudo apt-get update
+      - run: sudo apt-get install postgresql-client-10
+
+      - run:
+          name: Install Code Climate Test Reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      # Database set-up
+      - run: cp ./spec/dummy/config/database.circle.yml ./spec/dummy/config/database.yml
+      - run: bundle exec rake app:db:create
+      - run: bundle exec rake app:db:structure:load
+
+      # Check gems for security vulnerabilities in gems
+      - run: bundle exec bundle-audit update && bundle exec bundle-audit check
+
+      - run:
+          name: RSpec tests
+          command: |
+            # notify Code Climate of a pending test report using `before-build`
+            mkdir /tmp/test-results
+            ./cc-test-reporter before-build
+            bundle exec rspec --format progress \
+                              --format RspecJunitFormatter \
+                              --out /tmp/test-results/rspec.xml \
+                              --format progress
+            ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $?
+
+      # - run:
+      #     name: Code Climate Test Coverage
+      #     command: |
+      #       ./cc-test-reporter format-coverage -t simplecov -o "coverage/codeclimate.$CIRCLE_NODE_INDEX.json"
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+      # - deploy:
+      #     command: |
+      #       ./cc-test-reporter sum-coverage --output - --parts $CIRCLE_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --debug --input -

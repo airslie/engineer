@@ -1,0 +1,51 @@
+---
+verify_signatures: false
+PreCommit:
+  Brakeman:
+    enabled: true
+    on_warn: fail
+  RuboCop:
+    enabled: true
+    flags:
+    # - "--force-exclusion"
+    - "--rails"
+    - "--ignore-parent-exclusion"
+    on_warn: fail
+  CoffeeLint:
+    enabled: true
+  JsHint:
+    enabled: true
+    exclude:
+    - "**/vendor/assets/javascripts/**/*.js"
+  ScssLint:
+    enabled: true
+  YamlSyntax:
+    enabled: true
+    exclude:
+    - ".circleci/config.yml"
+  TrailingWhitespace:
+    enabled: true
+    exclude:
+    - "**/db/structure.sql"
+    - "**/*.md"
+    - "**/*.markdown"
+    - "**/spec/fixtures/attachments/**/*"
+    - "**/spec/cassettes/**/*"
+  RailsSchemaUpToDate:
+    enabled: false
+  HardTabs:
+    enabled: true
+    exclude:
+    - "**/vendor/assets/javascripts/**/*.js"
+    - "**/spec/fixtures/attachments/**/*"
+  I18nMissing:
+    enabled: true
+    description: Checking for missing locale snippets
+  I18nUnused:
+    enabled: true
+    description: Checking for unused locale snippets
+  RspecFocusCheck:
+    enabled: true
+    description: Checking for "focus:" left in specs
+    include:
+    - "**/spec/**/*_spec.rb"
