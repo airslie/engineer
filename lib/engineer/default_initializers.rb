@@ -3,11 +3,8 @@
 module Engineer
   module DefaultInitializers
     def self.included(klass)
-      db = Database::Initializers.new(klass)
-      db.append_migrations
-      db.share_db_paths
-
-      Locale::Initializers.new(klass).setup_locales
+      Database::Initializers.new(klass).add
+      Locale::Initializers.new(klass).add
     end
   end
 end
