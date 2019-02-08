@@ -1,3 +1,6 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/112e9f4a7cda28bd73d7/maintainability)](https://codeclimate.com/github/airslie/engineer/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/112e9f4a7cda28bd73d7/test_coverage)](https://codeclimate.com/github/airslie/engineer/test_coverage)
+
 # Engineer
 
 This gem makes developing a Renalware plugin (a Rails engine) a little easier.
