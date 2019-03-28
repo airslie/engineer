@@ -3,15 +3,12 @@ jobs:
   build:
     working_directory: ~/renalware-heroic
     docker:
-      # this is important to use proper image with browsers support
-      - image: circleci/ruby:2.5.3-stretch-node-browsers-legacy
+      - image: ccircleci/ruby:2.6.2-node-browsers
         environment:
           PGHOST: 127.0.0.1
           PGUSER: renalware
           RAILS_ENV: test
-      - image: circleci/postgres:10.3-alpine
-        environment:
-          POSTGRES_USER: renalware
+      - image: circleci/postgres:11.2-alpine-ram
       - image: redis:3.2.7
 
     parallelism: 1
@@ -35,10 +32,13 @@ jobs:
             - ./vendor/bundle
           key: renalware-heroic-{{ checksum "Gemfile.lock" }}
 
-      - run: sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main" > /etc/apt/sources.list.d/PostgreSQL.list'
-      - run: sudo sh -c 'wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -'
-      - run: sudo apt-get update
-      - run: sudo apt-get install postgresql-client-10
+      - run:
+          name: Install postgresql-client 11
+          command: |
+            wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+            RELEASE=$(lsb_release -cs)
+            echo "deb http://apt.postgresql.org/pub/repos/apt/ ${RELEASE}"-pgdg main | sudo tee  /etc/apt/sources.list.d/pgdg.list
+            sudo apt install postgresql-client-11
 
       - run:
           name: Install Code Climate Test Reporter
