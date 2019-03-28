@@ -26,7 +26,7 @@ module Engineer
       end
 
       def find_view_definition_among_all_possible_paths
-        found_files = all_full_paths.select{ |path| File.exist?(path) }
+        found_files = all_full_paths.select { |path| File.exist?(path) }
         if found_files.length > 1
           raise "More than one view definition matches the name #{filename}\n #{found_files}"
         end

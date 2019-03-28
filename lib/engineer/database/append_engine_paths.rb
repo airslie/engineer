@@ -3,7 +3,7 @@
 module Engineer
   module Database
     #
-    #  Add db/migrate, db/views, db/triggers and db/functions folders to app.config.paths so they
+    # Add db/migrate, db/views, db/triggers and db/functions folders to app.config.paths so they
     # can be resolved during migration
     # Be sure sure to append to any existing entries in #paths, because other engines, and
     # the app itself, will add their paths too.
