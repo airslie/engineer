@@ -30,9 +30,16 @@ module Engineer
 
       def without_papertrail_versioning_for(klass)
         raise ArgumentError unless klass.is_a? Class
+
         klass.paper_trail.disable
         yield
         klass.paper_trail.enable
+      end
+
+      def without_papertrail
+        PaperTrail.disable if defined?(PaperTrail)
+        yield if block_given?
+        PaperTrail.enable if defined?(PaperTrail)
       end
     end
   end

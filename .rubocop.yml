@@ -20,26 +20,20 @@ Rails/Output:
     - "db/**/*"
 
 # Disabling this as it is not
-RSpec/DescribeClass:
-  Enabled: true
-  Exclude:
-    - "spec/system/**/*"
+# RSpec/DescribeClass:
+#   Enabled: true
+#   Exclude:
+#     - "spec/system/**/*"
 
-RSpec/MultipleExpectations:
-  Max: 2
-  Exclude:
-    - "spec/system/**/*"
+# RSpec/MultipleExpectations:
+#   Max: 2
+#   Exclude:
+#     - "spec/system/**/*"
 
-RSpec/ExampleLength:
-  Max: 5
-  Exclude:
-    - "spec/system/**/*"
-
-Metrics/AbcSize:
-  Enabled: true
-  Max: 10
-  Exclude:
-    - "db/**/*"
+# RSpec/ExampleLength:
+#   Max: 5
+#   Exclude:
+#     - "spec/system/**/*"
 
 Metrics/MethodLength:
   Enabled: true
