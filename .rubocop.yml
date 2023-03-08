@@ -1,5 +1,6 @@
 require:
   - rubocop-rspec
+  - rubocop-rails
   - rubocop-performance
 
 # Note that the local default.yml is overwritten on CodeClimate with the contents of
