@@ -5,12 +5,12 @@ require "csv"
 module Engineer
   module Database
     module SeedHelper
-      def log(msg, type: :full)
+      def log(msg, type: :full, &block)
         case type
         when :full
           print "-----> #{msg}"
-          if block_given?
-            ms = Benchmark.ms { yield }
+          if block
+            ms = Benchmark.ms(&block)
             milliseconds = "#{ms.to_i}ms"
             print "\r-----> #{milliseconds.ljust(8, ' ')} #{msg}"
           end

@@ -6,6 +6,14 @@
 module Engineer
   module Locale
     class Initializers
+      def self.add_engine_locale_files(app, engine_config)
+        engine_locale_files = Dir[engine_config.root.join("config", "locales", "**", "*.{rb,yml}")]
+        i18n = app.config.i18n
+        i18n.load_path += engine_locale_files
+        i18n.default_locale = "en-GB"
+        i18n.fallbacks = [:en]
+      end
+
       def initialize(klass)
         @klass = klass
       end
@@ -17,14 +25,6 @@ module Engineer
           # variables we need.
           Engineer::Locale::Initializers.add_engine_locale_files(app, config)
         end
-      end
-
-      def self.add_engine_locale_files(app, engine_config)
-        engine_locale_files = Dir[engine_config.root.join("config", "locales", "**", "*.{rb,yml}")]
-        i18n = app.config.i18n
-        i18n.load_path += engine_locale_files
-        i18n.default_locale = "en-GB"
-        i18n.fallbacks = [:en]
       end
 
       private

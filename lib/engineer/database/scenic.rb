@@ -43,7 +43,7 @@ module Engineer
     end
 
     if defined?(Scenic)
-      Scenic::Definition.send(:prepend, ResolveScenicViewsAnywhere)
+      Scenic::Definition.prepend ResolveScenicViewsAnywhere
     end
   end
 end
